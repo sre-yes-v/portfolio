@@ -3,15 +3,15 @@ import StaggeredMenu from "../elements/StaggeredMenu";
 
 const menuItems = [
   { label: 'Home', ariaLabel: 'Go to home page', link: '/' },
-  { label: 'About', ariaLabel: 'Learn about us', link: '/about' },
-  { label: 'Services', ariaLabel: 'View our services', link: '/services' },
-  { label: 'Contact', ariaLabel: 'Get in touch', link: '/contact' }
+  { label: 'About', ariaLabel: 'Learn about Me', link: '/about' },
+  { label: 'Projects', ariaLabel: 'View our projects', link: '/projects' },
+  { label: 'Contact', ariaLabel: 'Get in touch', link: '#contact' }
 ];
 
 const socialItems = [
-  { label: 'Twitter', link: 'https://twitter.com' },
-  { label: 'GitHub', link: 'https://github.com' },
-  { label: 'LinkedIn', link: 'https://linkedin.com' }
+  { label: 'Instagram', link: 'https://www.instagram.com/sreyes_v?igsh=MTJocTBjYm11NnFyeA%3D%3D' },
+  { label: 'GitHub', link: 'https://github.com/sre-yes-v' },
+  { label: 'LinkedIn', link: 'https://www.linkedin.com/in/sreyes-v' }
 ];
 
 export default function Header() {

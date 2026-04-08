@@ -62,7 +62,7 @@ export default function Hero() {
 
             <div className="max-w-180 text-center">
               <BlurText
-                text="An independent creative designer and frontend developer focused on immersive digital products and clean execution."
+                text="Frontend Developer transitioning into Full-Stack, building fast, responsive web applications with clean and scalable code."
                 delay={50}
                 animateBy="words"
                 direction="top"
