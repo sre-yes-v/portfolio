@@ -118,6 +118,11 @@ export default function RootLayout({
               jobTitle: "Frontend Developer",
               description,
               image: `${siteUrl}/og_image.png`,
+              sameAs: [
+                "https://github.com/sre-yes-v",
+                "https://www.linkedin.com/in/sreyes-v",
+                "https://sreyes.com",
+              ],
             }),
           }}
         />
