@@ -3,6 +3,7 @@ import { Fira_Code, Geist } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import Header from "@/components/portfolio/ui/Header";
+import Footer from "@/components/portfolio/ui/Footer";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 const siteName = "Sreyes V Portfolio";
@@ -130,6 +131,7 @@ export default function RootLayout({
         <main className="grow">
           {children}
         </main>
+        <Footer />
       </body>
     </html>
   );

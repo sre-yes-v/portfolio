@@ -11,7 +11,8 @@ const menuItems = [
 const socialItems = [
   { label: 'Instagram', link: 'https://www.instagram.com/sreyes_v?igsh=MTJocTBjYm11NnFyeA%3D%3D' },
   { label: 'GitHub', link: 'https://github.com/sre-yes-v' },
-  { label: 'LinkedIn', link: 'https://www.linkedin.com/in/sreyes-v' }
+  { label: 'LinkedIn', link: 'https://www.linkedin.com/in/sreyes-v' },
+  { label: 'Email', link: 'mailto:sreyesv24@gmail.com' }
 ];
 
 export default function Header() {
