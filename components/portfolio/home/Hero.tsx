@@ -50,8 +50,8 @@ export default function Hero() {
               title="Frontend Developer"
               handle="sre-yes-v"
               status="GitHub"
-              contactText="Download Resume"
-              onContactClick={handleDownloadResume}
+              contactText="Get in touch"
+              contactLink="#contact"
               avatarUrl="/hero.png"
               showUserInfo={true}
               enableTilt
@@ -70,12 +70,12 @@ export default function Hero() {
               />
             </div>
 
-            <a
-              href="#contact"
-              className="rounded-xl bg-white px-7 py-3 text-sm font-semibold uppercase tracking-wider text-black transition-transform hover:scale-[1.02]"
+            <button
+              onClick={handleDownloadResume}
+              className="cursor-pointer rounded-xl bg-white px-7 py-3 text-sm font-semibold uppercase tracking-wider text-black transition-transform hover:scale-[1.02]"
             >
-              Contact Me
-            </a>
+              Download Resume
+            </button>
           </div>
         </div>
       </div>

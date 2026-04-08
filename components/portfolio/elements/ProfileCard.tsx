@@ -38,7 +38,7 @@ type ProfileCardProps = {
   status?: string;
   contactText?: string;
   showUserInfo?: boolean;
-  onContactClick?: () => void;
+  contactLink?: string;
 };
 
 const DEFAULT_INNER_GRADIENT = "linear-gradient(145deg,#60496e8c 0%,#71C4FF44 100%)";
@@ -75,7 +75,7 @@ function ProfileCardComponent({
   status = "Online",
   contactText = "Contact",
   showUserInfo = true,
-  onContactClick,
+  contactLink,
 }: ProfileCardProps) {
   const wrapRef = useRef<HTMLDivElement | null>(null);
   const shellRef = useRef<HTMLDivElement | null>(null);
@@ -346,9 +346,7 @@ function ProfileCardComponent({
     [iconUrl, grainUrl, innerGradient, behindGlowColor, behindGlowSize],
   );
 
-  const handleContactClick = useCallback(() => {
-    onContactClick?.();
-  }, [onContactClick]);
+
 
   return (
     <div ref={wrapRef} className={`pc-card-wrapper ${className}`.trim()} style={cardStyle}>
@@ -389,15 +387,14 @@ function ProfileCardComponent({
                       <div className="pc-status">{status}</div>
                     </div>
                   </div>
-                  <button
+                  <a
                     className="pc-contact-btn"
-                    onClick={handleContactClick}
+                    href={contactLink || "#"}
                     style={{ pointerEvents: "auto" }}
-                    type="button"
                     aria-label={`Contact ${name || "user"}`}
                   >
                     {contactText}
-                  </button>
+                  </a>
                 </div>
               )}
             </div>
