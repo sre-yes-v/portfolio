@@ -1,10 +1,24 @@
 "use client";
 
+import { useCallback } from "react";
 import BlurText from "../elements/BlurText";
 import ProfileCard from "../elements/ProfileCard";
 import TextPressure from "../elements/TextPressure";
 
+const RESUME_FILE_NAME = "Sreyes-V-Resume.pdf";
+const RESUME_FILE_PATH = "/Sreyes-V-Resume.pdf";
+
+
 export default function Hero() {
+  const handleDownloadResume = useCallback(() => {
+    const link = document.createElement("a");
+    link.href = RESUME_FILE_PATH;
+    link.download = RESUME_FILE_NAME;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  }, []);
+
   return (
     <section
       className="relative min-h-screen overflow-hidden px-4 pb-8 pt-10 text-white sm:px-7 lg:px-10"
@@ -36,7 +50,8 @@ export default function Hero() {
               title="Frontend Developer"
               handle="sre-yes-v"
               status="GitHub"
-              contactText="Hire Me"
+              contactText="Download Resume"
+              onContactClick={handleDownloadResume}
               avatarUrl="/hero.png"
               showUserInfo={true}
               enableTilt
@@ -55,9 +70,13 @@ export default function Hero() {
               />
             </div>
 
-            <button className="rounded-xl bg-white px-7 py-3 text-sm font-semibold uppercase tracking-wider text-black transition-transform hover:scale-[1.02]">
-              Contact Me
-            </button>
+            <a
+              href={RESUME_FILE_PATH}
+              download={RESUME_FILE_NAME}
+              className="rounded-xl bg-white px-7 py-3 text-sm font-semibold uppercase tracking-wider text-black transition-transform hover:scale-[1.02]"
+            >
+              Download Resume
+            </a>
           </div>
         </div>
       </div>
