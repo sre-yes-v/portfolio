@@ -68,8 +68,34 @@ function TextPressure({
   const [fontSize, setFontSize] = useState(minFontSize);
   const [scaleY, setScaleY] = useState(1);
   const [lineHeight, setLineHeight] = useState(1);
+  const [isInView, setIsInView] = useState(true);
+
+  const metricsRef = useRef<{ centers: Point[]; maxDist: number }>({
+    centers: [],
+    maxDist: 1,
+  });
 
   const chars = text.split("");
+
+  const recomputeMetrics = useCallback(() => {
+    const title = titleRef.current;
+    if (!title) return;
+
+    const titleRect = title.getBoundingClientRect();
+    const maxDist = Math.max(titleRect.width / 2, 1);
+    const centers: Point[] = [];
+
+    spansRef.current.forEach((span) => {
+      if (!span) return;
+      const rect = span.getBoundingClientRect();
+      centers.push({
+        x: rect.x + rect.width / 2,
+        y: rect.y + rect.height / 2,
+      });
+    });
+
+    metricsRef.current = { centers, maxDist };
+  }, []);
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -101,6 +127,21 @@ function TextPressure({
     };
   }, []);
 
+  useEffect(() => {
+    const target = containerRef.current;
+    if (!target) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsInView(entry.isIntersecting);
+      },
+      { threshold: 0.05 },
+    );
+
+    observer.observe(target);
+    return () => observer.disconnect();
+  }, []);
+
   const setSize = useCallback(() => {
     if (!containerRef.current || !titleRef.current) return;
 
@@ -122,8 +163,10 @@ function TextPressure({
         setScaleY(yRatio);
         setLineHeight(yRatio);
       }
+
+      recomputeMetrics();
     });
-  }, [chars.length, minFontSize, scale]);
+  }, [chars.length, minFontSize, scale, recomputeMetrics]);
 
   useEffect(() => {
     const debouncedSetSize = debounce(setSize, 100);
@@ -133,24 +176,25 @@ function TextPressure({
   }, [setSize]);
 
   useEffect(() => {
+    if (!isInView) return;
+
     let rafId = 0;
 
     const animate = () => {
       mouseRef.current.x += (cursorRef.current.x - mouseRef.current.x) / 15;
       mouseRef.current.y += (cursorRef.current.y - mouseRef.current.y) / 15;
 
-      if (titleRef.current) {
-        const titleRect = titleRef.current.getBoundingClientRect();
-        const maxDist = titleRect.width / 2;
+      const { centers, maxDist } = metricsRef.current;
+
+      if (centers.length) {
+        let centerIndex = 0;
 
         spansRef.current.forEach((span) => {
           if (!span) return;
 
-          const rect = span.getBoundingClientRect();
-          const charCenter: Point = {
-            x: rect.x + rect.width / 2,
-            y: rect.y + rect.height / 2,
-          };
+          const charCenter = centers[centerIndex];
+          centerIndex += 1;
+          if (!charCenter) return;
 
           const d = dist(mouseRef.current, charCenter);
 
@@ -175,7 +219,7 @@ function TextPressure({
 
     animate();
     return () => cancelAnimationFrame(rafId);
-  }, [width, weight, italic, alpha]);
+  }, [width, weight, italic, alpha, isInView]);
 
   const styleElement = useMemo(
     () => (
