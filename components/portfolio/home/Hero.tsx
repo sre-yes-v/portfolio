@@ -71,11 +71,10 @@ export default function Hero() {
             </div>
 
             <a
-              href={RESUME_FILE_PATH}
-              download={RESUME_FILE_NAME}
+              href="#contact"
               className="rounded-xl bg-white px-7 py-3 text-sm font-semibold uppercase tracking-wider text-black transition-transform hover:scale-[1.02]"
             >
-              Download Resume
+              Contact Me
             </a>
           </div>
         </div>

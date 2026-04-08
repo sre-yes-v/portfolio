@@ -27,7 +27,7 @@ export default function Header() {
         openMenuButtonColor="#fff"
         changeMenuColorOnOpen
         colors={["#1d2846", "#111827"]}
-        logoUrl="/Logo.png"
+        logoUrl="/logosv.png"
         accentColor="#4658c9"
         isFixed={true}
       />
