@@ -1,4 +1,6 @@
 import type { MetadataRoute } from "next";
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
@@ -6,7 +8,7 @@ export default function manifest(): MetadataRoute.Manifest {
     short_name: "Sreyes V",
     description:
       "An independent creative designer and frontend developer focused on immersive digital products and clean execution.",
-    start_url: "/",
+    start_url: siteUrl,
     display: "standalone",
     background_color: "#111522",
     theme_color: "#111522",
