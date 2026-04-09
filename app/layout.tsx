@@ -2,8 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Poppins } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
-import Header from "@/components/portfolio/ui/Header";
-import Footer from "@/components/portfolio/ui/Footer";
+import LayoutWrapper from "@/components/LayoutWrapper";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 const siteName = "Sreyes V Portfolio";
@@ -127,11 +126,9 @@ export default function RootLayout({
             }),
           }}
         />
-        <Header/>
-        <main className="grow">
+        <LayoutWrapper>
           {children}
-        </main>
-        <Footer />
+        </LayoutWrapper>
       </body>
     </html>
   );
