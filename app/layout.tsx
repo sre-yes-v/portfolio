@@ -39,11 +39,11 @@ export const metadata: Metadata = {
   creator: "Sreyes V",
   publisher: "Sreyes V",
   alternates: {
-    canonical: "https://sreyesv.com",
+    canonical: siteUrl,
   },
   openGraph: {
     type: "website",
-    url: "https://sreyesv.com",
+    url: siteUrl,
     siteName,
     title: "Sreyes V - Portfolio",
     description,
