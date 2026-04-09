@@ -1,20 +1,11 @@
 "use client";
 
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+
 import AdminSidebar from "@/components/admin/ui/Sidebar";
 import { FolderKanban } from "lucide-react";
 
 export default function AdminProjectsPage() {
-  const router = useRouter();
-
-  useEffect(() => {
-    const token = localStorage.getItem("adminToken");
-
-    if (!token) {
-      router.push("/admin/login");
-    }
-  }, [router]);
+  
 
   return (
     <AdminSidebar>

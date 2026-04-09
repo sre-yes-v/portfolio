@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
 	LayoutDashboard,
 	FolderKanban,
@@ -32,7 +32,22 @@ export default function AdminSidebar({
 	children: React.ReactNode;
 }) {
 	const pathname = usePathname();
+	const router = useRouter();
 	const [mobileOpen, setMobileOpen] = useState(false);
+	const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+	const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+	useEffect(() => {
+		const token = localStorage.getItem("adminToken");
+
+		if (!token) {
+			router.replace("/admin/login");
+			return;
+		}
+
+		setIsAuthenticated(true);
+		setIsCheckingAuth(false);
+	}, [router]);
 
 	const isActive = (href: string) =>
 		pathname === href || pathname?.startsWith(`${href}/`);
@@ -46,6 +61,27 @@ export default function AdminSidebar({
 		].join(" ");
 
 	const closeMobile = () => setMobileOpen(false);
+
+	const handleLogout = () => {
+		localStorage.removeItem("adminToken");
+		setIsAuthenticated(false);
+		router.push("/admin/login");
+	};
+
+	if (isCheckingAuth) {
+		return (
+			<div className="flex min-h-screen items-center justify-center bg-[#111522] text-white">
+				<div className="flex flex-col items-center gap-3 text-center">
+					<div className="h-10 w-10 animate-spin rounded-full border-2 border-white/20 border-t-white" />
+					<p className="text-sm text-slate-300">Checking admin access...</p>
+				</div>
+			</div>
+		);
+	}
+
+	if (!isAuthenticated) {
+		return null;
+	}
 
 	return (
 		<div className="min-h-screen bg-[radial-gradient(1100px_650px_at_85%_15%,rgba(109,129,255,0.16),transparent_65%),radial-gradient(900px_560px_at_10%_85%,rgba(72,94,198,0.16),transparent_70%),#111522] text-white lg:flex">
@@ -76,7 +112,16 @@ export default function AdminSidebar({
 				</nav>
 
 				<div className="border-t border-white/10 px-6 py-5 text-xs text-slate-400">
-					Manage your portfolio content from one place.
+					<div className="space-y-4">
+						<p>Manage your portfolio content from one place.</p>
+						<button
+							type="button"
+							onClick={handleLogout}
+							className="inline-flex w-full items-center justify-center rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm font-medium text-white/80 transition hover:border-white/20 hover:bg-white/10 hover:text-white"
+						>
+							Logout
+						</button>
+					</div>
 				</div>
 			</aside>
 
@@ -150,6 +195,16 @@ export default function AdminSidebar({
 								);
 							})}
 						</nav>
+
+						<div className="mt-6 border-t border-white/10 pt-5">
+							<button
+								type="button"
+								onClick={handleLogout}
+								className="inline-flex w-full items-center justify-center rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-medium text-white/80 transition hover:border-white/20 hover:bg-white/10 hover:text-white"
+							>
+								Logout
+							</button>
+						</div>
 					</aside>
 
 					<main className="flex-1 p-4 sm:p-6 lg:p-8">{children}</main>

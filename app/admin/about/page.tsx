@@ -1,20 +1,10 @@
 "use client";
 
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
 import AdminSidebar from "@/components/admin/ui/Sidebar";
 import { Info } from "lucide-react";
 
 export default function AdminAboutPage() {
-  const router = useRouter();
 
-  useEffect(() => {
-    const token = localStorage.getItem("adminToken");
-
-    if (!token) {
-      router.push("/admin/login");
-    }
-  }, [router]);
 
   return (
     <AdminSidebar>
