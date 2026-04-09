@@ -64,7 +64,7 @@ export default function Hero() {
               <BlurText
                 text=' " Frontend Developer transitioning into Full-Stack, building fast, responsive web applications with clean and scalable code. "'
                 highlightText="Frontend Developer"
-                highlightClassName="font-bold text-[#b9c6ff]"
+                highlightClassName="font-bold"
                 delay={50}
                 animateBy="words"
                 direction="top"
