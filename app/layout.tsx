@@ -106,7 +106,12 @@ export default function RootLayout({
       lang="en"
       className={cn("h-full antialiased", "font-sans", geist.variable)}
     >
-      <body className={`${poppins.className} min-h-full flex flex-col`}>
+      <body className={`${poppins.className} min-h-full flex flex-col`}
+        style={{
+					background:
+						"radial-gradient(800px 400px at 10% 20%, rgba(109,129,255,0.18), transparent 70%), radial-gradient(700px 380px at 85% 80%, rgba(67,94,212,0.18), transparent 75%), linear-gradient(180deg, #0b1020 0%, #080d1a 100%)",
+				}}
+      >
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{

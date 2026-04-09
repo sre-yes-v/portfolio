@@ -167,16 +167,9 @@ export default function About() {
 		<section
 			ref={sectionRef}
 			id="about"
-			className="relative isolate scroll-mt-28 overflow-hidden border-y border-white/10 bg-[#0b1020] px-4 py-20 text-white sm:px-7 lg:px-10"
+			className="relative isolate scroll-mt-28 overflow-hidden  px-4 py-20 text-white sm:px-7 lg:px-10"
 		>
-			{/* Background */}
-			<div
-				className="pointer-events-none absolute inset-0 -z-10"
-				style={{
-					background:
-						"radial-gradient(800px 400px at 10% 20%, rgba(109,129,255,0.18), transparent 70%), radial-gradient(700px 380px at 85% 80%, rgba(67,94,212,0.18), transparent 75%), linear-gradient(180deg, #0b1020 0%, #080d1a 100%)",
-				}}
-			/>
+		
 
 			<div className="mx-auto max-w-6xl">
 				{/* Tag */}
