@@ -52,6 +52,7 @@ const Footer = () => {
                     <li key={link.label}>
                       <a
                         href={link.href}
+                        target='_blank'
                         className="group inline-flex items-center gap-2 text-base font-medium text-white/80 transition-colors hover:text-white"
                       >
                         <span className="h-px w-5 bg-white/20 transition-all group-hover:w-8 group-hover:bg-[#6d81ff]" />
