@@ -39,17 +39,17 @@ export const metadata: Metadata = {
   creator: "Sreyes V",
   publisher: "Sreyes V",
   alternates: {
-    canonical: siteUrl,
+    canonical: `${siteUrl}/`,
   },
   openGraph: {
     type: "website",
-    url: siteUrl,
+    url: `${siteUrl}/`,
     siteName,
     title: "Sreyes V - Portfolio",
     description,
     images: [
       {
-        url: "/og_image.png",
+        url: `${siteUrl}/og_image.png`,
         width: 1200,
         height: 630,
         alt: "Sreyes V portfolio preview",
@@ -60,7 +60,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Sreyes V - Portfolio",
     description,
-    images: ["/og_image.png"],
+    images: [`${siteUrl}/og_image.png`],
   },
   robots: {
     index: true,
