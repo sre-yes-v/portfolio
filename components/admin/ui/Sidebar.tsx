@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
@@ -34,20 +34,21 @@ export default function AdminSidebar({
 	const pathname = usePathname();
 	const router = useRouter();
 	const [mobileOpen, setMobileOpen] = useState(false);
-	const [isCheckingAuth, setIsCheckingAuth] = useState(true);
-	const [isAuthenticated, setIsAuthenticated] = useState(false);
+	const adminToken = useSyncExternalStore(
+		(subscribe) => {
+			window.addEventListener("storage", subscribe);
+			return () => window.removeEventListener("storage", subscribe);
+		},
+		() => localStorage.getItem("adminToken"),
+		() => null
+	);
+	const isAuthenticated = Boolean(adminToken);
 
 	useEffect(() => {
-		const token = localStorage.getItem("adminToken");
-
-		if (!token) {
+		if (!isAuthenticated) {
 			router.replace("/admin/login");
-			return;
 		}
-
-		setIsAuthenticated(true);
-		setIsCheckingAuth(false);
-	}, [router]);
+	}, [isAuthenticated, router]);
 
 	const isActive = (href: string) =>
 		pathname === href || pathname?.startsWith(`${href}/`);
@@ -64,11 +65,10 @@ export default function AdminSidebar({
 
 	const handleLogout = () => {
 		localStorage.removeItem("adminToken");
-		setIsAuthenticated(false);
 		router.push("/admin/login");
 	};
 
-	if (isCheckingAuth) {
+	if (!adminToken) {
 		return (
 			<div className="flex min-h-screen items-center justify-center bg-[#111522] text-white">
 				<div className="flex flex-col items-center gap-3 text-center">
@@ -77,10 +77,6 @@ export default function AdminSidebar({
 				</div>
 			</div>
 		);
-	}
-
-	if (!isAuthenticated) {
-		return null;
 	}
 
 	return (
