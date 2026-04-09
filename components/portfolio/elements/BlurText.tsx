@@ -13,6 +13,8 @@ type BlurStep = Partial<BlurState>;
 
 type BlurTextProps = {
   text?: string;
+  highlightText?: string;
+  highlightClassName?: string;
   delay?: number;
   className?: string;
   animateBy?: "words" | "letters";
@@ -40,6 +42,8 @@ const buildKeyframes = (from: BlurState, steps: BlurStep[]): Record<string, Arra
 
 function BlurText({
   text = "",
+  highlightText,
+  highlightClassName = "font-bold text-[#b9c6ff]",
   delay = 200,
   className = "",
   animateBy = "words",
@@ -55,6 +59,38 @@ function BlurText({
   const elements = animateBy === "words" ? text.split(" ") : text.split("");
   const [inView, setInView] = useState(false);
   const ref = useRef<HTMLParagraphElement | null>(null);
+
+  const normalizedHighlightWords = useMemo(
+    () => (highlightText ? highlightText.split(" ").filter(Boolean) : []),
+    [highlightText],
+  );
+
+  const renderedElements = useMemo(() => {
+    if (animateBy !== "words" || normalizedHighlightWords.length === 0) {
+      return elements.map((segment) => ({ text: segment, highlighted: false }));
+    }
+
+    const tokens = text.split(" ");
+    const highlightLength = normalizedHighlightWords.length;
+    const matches: Array<{ text: string; highlighted: boolean }> = [];
+
+    for (let index = 0; index < tokens.length; ) {
+      const slice = tokens.slice(index, index + highlightLength);
+      const matchesHighlight =
+        slice.length === highlightLength &&
+        slice.every((word, sliceIndex) => word === normalizedHighlightWords[sliceIndex]);
+
+      if (matchesHighlight) {
+        slice.forEach((word) => matches.push({ text: word, highlighted: true }));
+        index += highlightLength;
+      } else {
+        matches.push({ text: tokens[index], highlighted: false });
+        index += 1;
+      }
+    }
+
+    return matches;
+  }, [animateBy, elements, normalizedHighlightWords, text]);
 
   useEffect(() => {
     if (!ref.current) return;
@@ -103,12 +139,12 @@ function BlurText({
 
   return (
     <p ref={ref} className={className} style={{ display: "flex", flexWrap: "wrap" }}>
-      {elements.map((segment, index) => {
+      {renderedElements.map((segment, index) => {
         const animateKeyframes = buildKeyframes(fromSnapshot, toSnapshots);
 
         return (
           <motion.span
-            className="inline-block will-change-[transform,filter,opacity]"
+            className={`inline-block will-change-[transform,filter,opacity] ${segment.highlighted ? highlightClassName : ""}`.trim()}
             key={index}
             initial={fromSnapshot}
             animate={inView ? animateKeyframes : fromSnapshot}
@@ -120,8 +156,8 @@ function BlurText({
             }}
             onAnimationComplete={index === elements.length - 1 ? onAnimationComplete : undefined}
           >
-            {segment === " " ? "\u00A0" : segment}
-            {animateBy === "words" && index < elements.length - 1 && "\u00A0"}
+            {segment.text === " " ? "\u00A0" : segment.text}
+            {animateBy === "words" && index < renderedElements.length - 1 && "\u00A0"}
           </motion.span>
         );
       })}

@@ -33,7 +33,7 @@ type ProfileCardProps = {
   mobileTiltSensitivity?: number;
   miniAvatarUrl?: string;
   name?: string;
-  title?: string;
+  title?: React.ReactNode;
   handle?: string;
   status?: string;
   contactText?: string;

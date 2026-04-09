@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Fira_Code, Geist } from "next/font/google";
+import { Geist, Poppins } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import Header from "@/components/portfolio/ui/Header";
@@ -12,9 +12,9 @@ const description =
 
 const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
-const firaCode = Fira_Code({
+const poppins = Poppins({
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
+  weight: ["200","300", "400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -107,7 +107,7 @@ export default function RootLayout({
       lang="en"
       className={cn("h-full antialiased", "font-sans", geist.variable)}
     >
-      <body className={`${firaCode.className} min-h-full flex flex-col`}>
+      <body className={`${poppins.className} min-h-full flex flex-col`}>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{

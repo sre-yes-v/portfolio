@@ -62,11 +62,13 @@ export default function Hero() {
 
             <div className="max-w-180 text-center">
               <BlurText
-                text="Frontend Developer transitioning into Full-Stack, building fast, responsive web applications with clean and scalable code."
+                text=' " Frontend Developer transitioning into Full-Stack, building fast, responsive web applications with clean and scalable code. "'
+                highlightText="Frontend Developer"
+                highlightClassName="font-bold text-[#b9c6ff]"
                 delay={50}
                 animateBy="words"
                 direction="top"
-                className="justify-center text-lg font-medium leading-tight text-white/92 sm:text-3xl"
+                className="justify-center text-lg font-extralight leading-tight italic text-white/92 sm:text-lg"
               />
             </div>
 
