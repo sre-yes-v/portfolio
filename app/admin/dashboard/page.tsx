@@ -1,14 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import AdminSidebar from "@/components/admin/ui/Sidebar";
 import {
   ArrowRight,
-  CheckCircle2,
-  FolderKanban,
   Mail,
-  PencilLine,
+  RefreshCw,
   Sparkles,
   Users,
 } from "lucide-react";
@@ -18,32 +16,43 @@ export default function AdminPage() {
   const [messagesCount, setMessagesCount] = useState(0);
   const [visitsCount, setVisitsCount] = useState(0);
   const [statsLoading, setStatsLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const loadStats = useCallback(async (showInitialLoader = false) => {
+    try {
+      if (showInitialLoader) {
+        setStatsLoading(true);
+      }
+
+      const response = await fetch("/api/admin/stats", { cache: "no-store" });
+
+      if (!response.ok) {
+        throw new Error("Failed to load stats");
+      }
+
+      const data = (await response.json()) as {
+        messagesCount?: number;
+        visitsCount?: number;
+      };
+
+      setMessagesCount(data.messagesCount ?? 0);
+      setVisitsCount(data.visitsCount ?? 0);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setStatsLoading(false);
+      setRefreshing(false);
+    }
+  }, []);
 
   useEffect(() => {
-    const loadStats = async () => {
-      try {
-        const response = await fetch("/api/admin/stats", { cache: "no-store" });
+    void loadStats(true);
+  }, [loadStats]);
 
-        if (!response.ok) {
-          throw new Error("Failed to load stats");
-        }
-
-        const data = (await response.json()) as {
-          messagesCount?: number;
-          visitsCount?: number;
-        };
-
-        setMessagesCount(data.messagesCount ?? 0);
-        setVisitsCount(data.visitsCount ?? 0);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setStatsLoading(false);
-      }
-    };
-
-    void loadStats();
-  }, []);
+  const handleRefresh = () => {
+    setRefreshing(true);
+    void loadStats(false);
+  };
 
 
 
@@ -67,10 +76,22 @@ export default function AdminPage() {
               </div>
             </div>
 
-            <Link href="/" className="inline-flex items-center justify-center gap-2 rounded-xl bg-linear-to-r from-blue-600 to-purple-600 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-500/20 transition hover:from-blue-500 hover:to-purple-500">
-              Open portfolio
-              <ArrowRight className="h-4 w-4" />
-            </Link>
+            <div className="flex flex-wrap items-center justify-end gap-3">
+              <button
+                type="button"
+                onClick={handleRefresh}
+                disabled={refreshing}
+                className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-semibold text-white transition hover:border-white/20 hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-70"
+              >
+                <RefreshCw className={`h-4 w-4 ${refreshing ? "animate-spin" : ""}`} />
+                {refreshing ? "Refreshing..." : "Refresh"}
+              </button>
+
+              <Link href="/" className="inline-flex items-center justify-center gap-2 rounded-xl bg-linear-to-r from-blue-600 to-purple-600 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-500/20 transition hover:from-blue-500 hover:to-purple-500">
+                Open portfolio
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
           </div>
         </section>
 
