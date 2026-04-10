@@ -44,13 +44,13 @@ function InstagramIcon({ className }: IconProps) {
 const contactLinks = [
     {
         label: "Email",
-        value: "sreyesv.dev@gmail.com",
-        href: "mailto:sreyesv.dev@gmail.com",
+        value: "sreyesv24@gmail.com",
+        href: "mailto:sreyesv24@gmail.com",
     },
     {
         label: "Location",
-        value: "India / Remote",
-        href: "https://maps.google.com",
+        value: "Kerala, India",
+        href: "https://maps.app.goo.gl/QwNfJ9d97csYvBf88",
     },
     // {
     //     Labbel: "Open for",
@@ -135,6 +135,7 @@ export default function Contact() {
                                     <a
                                         key={item.label}
                                         href={item.href}
+                                        target="_blank"
                                         className="group flex items-center justify-between rounded-2xl border border-white/10 bg-[#111827]/60 px-4 py-4 transition duration-200 hover:border-white/20 hover:bg-white/8"
                                     >
                                         <div>
