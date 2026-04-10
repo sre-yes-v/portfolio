@@ -1,10 +1,49 @@
 "use client";
 
+import { useEffect, useState } from "react";
 
 import AdminSidebar from "@/components/admin/ui/Sidebar";
-import { ArrowRight, CheckCircle2, FolderKanban, Mail, PencilLine, Sparkles } from "lucide-react";
+import {
+  ArrowRight,
+  CheckCircle2,
+  FolderKanban,
+  Mail,
+  PencilLine,
+  Sparkles,
+  Users,
+} from "lucide-react";
+import Link from "next/link";
 
 export default function AdminPage() {
+  const [messagesCount, setMessagesCount] = useState(0);
+  const [visitsCount, setVisitsCount] = useState(0);
+  const [statsLoading, setStatsLoading] = useState(true);
+
+  useEffect(() => {
+    const loadStats = async () => {
+      try {
+        const response = await fetch("/api/admin/stats", { cache: "no-store" });
+
+        if (!response.ok) {
+          throw new Error("Failed to load stats");
+        }
+
+        const data = (await response.json()) as {
+          messagesCount?: number;
+          visitsCount?: number;
+        };
+
+        setMessagesCount(data.messagesCount ?? 0);
+        setVisitsCount(data.visitsCount ?? 0);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setStatsLoading(false);
+      }
+    };
+
+    void loadStats();
+  }, []);
 
 
 
@@ -28,34 +67,26 @@ export default function AdminPage() {
               </div>
             </div>
 
-            <button className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-500/20 transition hover:from-blue-500 hover:to-purple-500">
+            <Link href="/" className="inline-flex items-center justify-center gap-2 rounded-xl bg-linear-to-r from-blue-600 to-purple-600 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-500/20 transition hover:from-blue-500 hover:to-purple-500">
               Open portfolio
               <ArrowRight className="h-4 w-4" />
-            </button>
+            </Link>
           </div>
         </section>
 
         <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           {[
             {
-              title: "Dashboard",
-              description: "View quick stats and recent activity.",
-              icon: CheckCircle2,
-            },
-            {
-              title: "Manage Project",
-              description: "Update featured projects and portfolio work.",
-              icon: FolderKanban,
-            },
-            {
-              title: "Manage About",
-              description: "Edit your bio, skills, and experience summary.",
-              icon: PencilLine,
-            },
-            {
-              title: "Messages",
-              description: "Review contact form submissions.",
+              title: "Messages Received",
+              description: "Total contact form submissions.",
               icon: Mail,
+              value: statsLoading ? "..." : messagesCount.toLocaleString(),
+            },
+            {
+              title: "Site Visitors",
+              description: "Total recorded homepage visits.",
+              icon: Users,
+              value: statsLoading ? "..." : visitsCount.toLocaleString(),
             },
           ].map((card) => {
             const Icon = card.icon;
@@ -69,6 +100,9 @@ export default function AdminPage() {
                   <Icon className="h-5 w-5" />
                 </div>
                 <h3 className="text-lg font-semibold text-white">{card.title}</h3>
+                {card.value !== null && (
+                  <p className="mt-2 text-3xl font-semibold leading-none text-white">{card.value}</p>
+                )}
                 <p className="mt-2 text-sm leading-6 text-slate-400">{card.description}</p>
               </article>
             );

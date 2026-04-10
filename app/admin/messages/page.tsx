@@ -3,13 +3,14 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import AdminSidebar from "@/components/admin/ui/Sidebar";
-import { ArrowUpRight, Mail, RefreshCw, User } from "lucide-react";
+import { ArrowUpRight, CheckCircle2, Mail, RefreshCw, Trash2, User } from "lucide-react";
 
 type MessageItem = {
   _id: string;
   name: string;
   email: string;
   message: string;
+  replied?: boolean;
   createdAt?: string;
 };
 
@@ -18,6 +19,7 @@ export default function AdminMessagesPage() {
   const [messages, setMessages] = useState<MessageItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [pendingAction, setPendingAction] = useState<Record<string, "reply" | "delete" | null>>({});
 
   const loadMessages = async () => {
     try {
@@ -50,6 +52,60 @@ export default function AdminMessagesPage() {
 
     void loadMessages();
   }, [router]);
+
+  const markAsReplied = async (messageId: string) => {
+    try {
+      setPendingAction((prev) => ({ ...prev, [messageId]: "reply" }));
+
+      const response = await fetch(`/api/contact/${messageId}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ replied: true }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to update message");
+      }
+
+      setMessages((prev) =>
+        prev.map((item) => (item._id === messageId ? { ...item, replied: true } : item))
+      );
+    } catch (actionError) {
+      console.error(actionError);
+      setError("Could not mark this message as replied.");
+    } finally {
+      setPendingAction((prev) => ({ ...prev, [messageId]: null }));
+    }
+  };
+
+  const deleteMessage = async (messageId: string) => {
+    const confirmed = window.confirm("Delete this message permanently?");
+
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      setPendingAction((prev) => ({ ...prev, [messageId]: "delete" }));
+
+      const response = await fetch(`/api/contact/${messageId}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to delete message");
+      }
+
+      setMessages((prev) => prev.filter((item) => item._id !== messageId));
+    } catch (actionError) {
+      console.error(actionError);
+      setError("Could not delete this message.");
+    } finally {
+      setPendingAction((prev) => ({ ...prev, [messageId]: null }));
+    }
+  };
 
   return (
     <AdminSidebar>
@@ -133,12 +189,20 @@ export default function AdminMessagesPage() {
                     </div>
 
                     {item.createdAt && (
-                      <time className="whitespace-nowrap text-xs text-slate-500">
-                        {new Date(item.createdAt).toLocaleDateString("en-US", {
-                          month: "short",
-                          day: "numeric",
-                          year: "numeric",
-                        })}
+                      <time className="text-right text-xs text-slate-500">
+                        <p>
+                          {new Date(item.createdAt).toLocaleDateString("en-US", {
+                            month: "short",
+                            day: "numeric",
+                            year: "numeric",
+                          })}
+                        </p>
+                        <p className="mt-1 text-[11px] text-slate-400">
+                          {new Date(item.createdAt).toLocaleTimeString("en-US", {
+                            hour: "numeric",
+                            minute: "2-digit",
+                          })}
+                        </p>
                       </time>
                     )}
                   </div>
@@ -151,16 +215,42 @@ export default function AdminMessagesPage() {
                   </div>
 
                   <div className="mt-5 flex items-center justify-between gap-3 border-t border-white/10 pt-4">
-                    <span className="text-xs uppercase tracking-[0.2em] text-white/45">
-                      New inquiry
-                    </span>
-                    <a
-                      href={`mailto:${item.email}?subject=Re: Portfolio inquiry from ${encodeURIComponent(item.name)}`}
-                      className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-white/80 transition hover:border-white/20 hover:bg-white/10 hover:text-white"
+                    <span
+                      className={`text-xs uppercase tracking-[0.2em] ${
+                        item.replied ? "text-emerald-300/85" : "text-white/45"
+                      }`}
                     >
-                      Reply
-                      <ArrowUpRight className="h-4 w-4" />
-                    </a>
+                      {item.replied ? "Replied" : "New inquiry"}
+                    </span>
+                    <div className="flex flex-wrap items-center justify-end gap-2">
+                      <button
+                        type="button"
+                        onClick={() => void markAsReplied(item._id)}
+                        disabled={item.replied || pendingAction[item._id] !== null && pendingAction[item._id] !== undefined}
+                        className="inline-flex items-center gap-2 rounded-full border border-emerald-300/20 bg-emerald-400/10 px-4 py-2 text-sm font-medium text-emerald-200 transition hover:border-emerald-200/40 hover:bg-emerald-400/15 disabled:cursor-not-allowed disabled:opacity-60"
+                      >
+                        <CheckCircle2 className="h-4 w-4" />
+                        {item.replied ? "Marked" : "Mark as replied"}
+                      </button>
+
+                      <a
+                        href={`mailto:${item.email}?subject=Re: Portfolio inquiry from ${encodeURIComponent(item.name)}`}
+                        className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-white/80 transition hover:border-white/20 hover:bg-white/10 hover:text-white"
+                      >
+                        Reply
+                        <ArrowUpRight className="h-4 w-4" />
+                      </a>
+
+                      <button
+                        type="button"
+                        onClick={() => void deleteMessage(item._id)}
+                        disabled={pendingAction[item._id] !== null && pendingAction[item._id] !== undefined}
+                        className="inline-flex items-center gap-2 rounded-full border border-red-300/25 bg-red-400/10 px-4 py-2 text-sm font-medium text-red-200 transition hover:border-red-200/45 hover:bg-red-400/20 disabled:cursor-not-allowed disabled:opacity-60"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                        Delete
+                      </button>
+                    </div>
                   </div>
                 </article>
               ))}
