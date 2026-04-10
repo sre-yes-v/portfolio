@@ -1,6 +1,7 @@
 import Hero from "./Hero";
 import About from "./About";
 import Contact from "./Contact";
+import Projects from "./Projects";
 
 
 export default function HomeMain() {
@@ -14,11 +15,10 @@ export default function HomeMain() {
         }}
       >
         <Hero />
-        <div className="relative">
+        <div className="relative space-y-20">
           <About />
-          <div className="-mt-2 sm:-mt-4">
+          <Projects/>
             <Contact />
-          </div>
         </div>
       </div>
     </section>

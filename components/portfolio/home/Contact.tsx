@@ -214,7 +214,7 @@ export default function Contact() {
                             <button
                                 type="submit"
                                 disabled={status === "loading"}
-                                className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 px-4 py-3.5 text-sm font-semibold text-white shadow-lg transition hover:from-blue-500 hover:to-purple-500 disabled:opacity-70"
+                                className="inline-flex w-full items-center justify-center gap-2 cursor-pointer rounded-xl bg-slate-300 px-7 py-3 text-sm font-semibold uppercase tracking-wider text-black transition-transform hover:scale-[1.02]"
                             >
                                 {status === "loading" ? <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" /> : <Send className="h-4 w-4" />}
                                 {status === "loading" ? "Sending..." : "Send message"}
