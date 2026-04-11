@@ -1,53 +1,68 @@
 "use client"
 
-import React, { useMemo, useState } from 'react'
+import React, { useMemo, useState, useEffect } from 'react'
 import CardSwap, { Card } from '../elements/CardSwap'
 
-const projectCards = [
-  {
-    title: 'Flarize',
-    tag: 'NextJS + Tailwind + TypeScript',
-    year: '2025',
-    summary: 'Solar Company Website: A sleek, modern site with interactive elements and a clean design to showcase solar solutions.',
-    demoLink: 'https://flarize.com/',
-    image:
-      "/flarize-mockup.png"
-  },
-  {
-    title: 'AMAI WebApp',
-    tag: 'NextJS + Tailwind + TypeScript',
-    year: '2025',
-    summary: 'AMAI - Ayurveda Medical Association of India: A dashboard for managing members, events, and resources with a clean design and intuitive navigation.',
-    demoLink: 'https://amaiapp.ayurveda-amai.org/login?next=%2Fplatform',
-    image:
-      '/amai-mockup.jpg'
-  },
-  {
-    title: 'Route Academy',
-    tag: 'NextJS + Tailwind + TypeScript',
-    year: '2026',
-    summary: 'Educational Platform: A sleek, modern site with interactive elements and a clean design to showcase educational courses.',
-    demoLink: 'https://web.routesacademy.com/',
-    image:
-      '/route-mockup.jpeg'
-  }
-]
+type ProjectCard = {
+  _id: string
+  name: string
+  category: string
+  year: string
+  summary: string
+  demoUrl: string
+  image: string
+  homeImage: string
+}
+
+type ProjectsApiResponse = {
+  success: boolean
+  projects: ProjectCard[]
+}
 
 const Projects = () => {
+  const [projectCards, setProjectCards] = useState<ProjectCard[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
   const [activeIndex, setActiveIndex] = useState(0)
+
+  useEffect(() => {
+    const loadProjects = async () => {
+      try {
+        setLoading(true)
+        setError('')
+
+        const response = await fetch('/api/projects?homeOnly=true', { cache: 'no-store' })
+
+        if (!response.ok) {
+          throw new Error('Failed to load selected projects')
+        }
+
+        const data = (await response.json()) as ProjectsApiResponse
+        setProjectCards(data.projects || [])
+      } catch (loadError) {
+        console.error(loadError)
+        setError('Could not load selected projects right now.')
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    void loadProjects()
+  }, [])
+
   const cardNodes = useMemo(
     () =>
       projectCards.map(card => (
         <Card
-          key={card.title}
+          key={card._id}
           customClass="overflow-hidden rounded-3xl border border-white/0 bg-zinc-950 shadow-[0_40px_90px_-40px_rgba(0,0,0,0.85)]"
         >
           <div
-            aria-label={card.title}
+            aria-label={card.name}
             role="img"
             className="h-full w-full bg-cover bg-center"
             style={{
-              backgroundImage: `url(${card.image})`,
+              backgroundImage: `url(${card.homeImage || card.image})`,
               WebkitMaskImage: 'linear-gradient(to bottom, #000 58%, transparent 100%)',
               maskImage: 'linear-gradient(to bottom, #000 58%, transparent 100%)',
               WebkitMaskRepeat: 'no-repeat',
@@ -60,7 +75,7 @@ const Projects = () => {
 
           <div className="absolute inset-x-0 top-0 flex items-center justify-between px-6 py-5">
             <p className="rounded-full border border-white/30 bg-black/30 px-3 py-1 text-[11px] uppercase tracking-[0.18em] text-zinc-100 backdrop-blur-sm">
-              {card.tag}
+              {card.category}
             </p>
             <p className="rounded-full border border-white/20 bg-black/20 px-3 py-1 text-[11px] uppercase tracking-[0.18em] text-zinc-200 backdrop-blur-sm">
               {card.year}
@@ -69,7 +84,7 @@ const Projects = () => {
 
           <div className="absolute inset-x-0 bottom-0 px-6 pb-8 pt-16 sm:px-8 sm:pb-10">
             <h3 className="max-w-3xl text-3xl font-semibold leading-[1.02] text-white sm:text-4xl md:text-5xl">
-              {card.title}
+              {card.name}
             </h3>
             <p className="mt-4 max-w-2xl text-sm leading-relaxed text-zinc-200 sm:text-base">{card.summary}</p>
 
@@ -84,7 +99,7 @@ const Projects = () => {
               </a>
 
               <a
-                href={card.demoLink}
+                href={card.demoUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 rounded-full border border-slate-300 bg-slate-200 px-5 py-2.5 text-sm font-medium text-black backdrop-blur-sm transition hover:scale-[1.02]"
@@ -96,8 +111,32 @@ const Projects = () => {
           </div>
         </Card>
       )),
-    []
+    [projectCards]
   )
+
+  if (loading) {
+    return (
+      <section className="relative">
+        <div className="mx-auto grid h-[60vh] w-full max-w-6xl place-items-center">
+          <div className="h-40 w-full animate-pulse rounded-3xl border border-white/10 bg-white/5" />
+        </div>
+      </section>
+    )
+  }
+
+  if (error) {
+    return (
+      <section className="relative">
+        <div className="mx-auto max-w-6xl rounded-2xl border border-red-400/20 bg-red-400/10 p-5 text-sm text-red-200">
+          {error}
+        </div>
+      </section>
+    )
+  }
+
+  if (projectCards.length === 0) {
+    return null
+  }
 
   return (
     <section className="relative" style={{ height: `${projectCards.length * 100}vh` }}>

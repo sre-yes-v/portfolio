@@ -4,151 +4,55 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
 type Project = {
+  _id: string;
   name: string;
   year: string;
   category: string;
   summary: string;
   stack: string[];
   image: string;
+  homeImage: string;
   demoUrl: string;
+  showHomeScreen: boolean;
 };
 
-const projects: Project[] = [
-  {
-    name: "Flarize",
-    year: "2025",
-    category: "Solar Platform",
-    summary:
-      "Marketing website focused on trust, conversion, and strong product storytelling.",
-    stack: ["Next.js", "TypeScript", "Tailwind CSS"],
-    image: "/flarize-mockup.png",
-    demoUrl: "https://example.com",
-  },
-  {
-    name: "AMAI WebApp",
-    year: "2025",
-    category: "SaaS Dashboard",
-    summary:
-      "AMAI - Ayurveda Medical Association of India: A dashboard for managing members, events, and resources with a clean design and intuitive navigation.",
-    stack: ["Next.js", "TypeScript", "Tailwind CSS"],
-    image:
-      "/amai-mockup.jpg",
-    demoUrl: "https://example.com",
-  },
-  {
-    name: "Route Academy",
-    year: "2026",
-    category: "EdTech Experience",
-    summary:
-      "Learning platform with clear paths, easy enrollment, and progress-oriented design.",
-    stack: ["Next.js", "TypeScript", "Tailwind CSS"],
-    image:
-      "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1400&q=80",
-    demoUrl: "https://example.com",
-  },
-    {
-    name: "Flarize1",
-    year: "2025",
-    category: "Solar Platform",
-    summary:
-      "Marketing website focused on trust, conversion, and strong product storytelling.",
-    stack: ["Next.js", "TypeScript", "Tailwind CSS"],
-    image: "/flarize-mockup.png",
-    demoUrl: "https://example.com",
-  },
-  {
-    name: "AMAI WebApp1",
-    year: "2025",
-    category: "SaaS Dashboard",
-    summary:
-      "AMAI - Ayurveda Medical Association of India: A dashboard for managing members, events, and resources with a clean design and intuitive navigation.",
-    stack: ["Next.js", "TypeScript", "Tailwind CSS"],
-    image:
-      "/amai-mockup.jpg",
-    demoUrl: "https://example.com",
-  },
-  {
-    name: "Route Academy1",
-    year: "2026",
-    category: "EdTech Experience",
-    summary:
-      "Learning platform with clear paths, easy enrollment, and progress-oriented design.",
-    stack: ["Next.js", "TypeScript", "Tailwind CSS"],
-    image:
-      "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1400&q=80",
-    demoUrl: "https://example.com",
-  },
-    {
-    name: "Flarize2",
-    year: "2025",
-    category: "Solar Platform",
-    summary:
-      "Marketing website focused on trust, conversion, and strong product storytelling.",
-    stack: ["Next.js", "TypeScript", "Tailwind CSS"],
-    image: "/flarize-mockup.png",
-    demoUrl: "https://example.com",
-  },
-  {
-    name: "AMAI WebApp2",
-    year: "2025",
-    category: "SaaS Dashboard",
-    summary:
-      "AMAI - Ayurveda Medical Association of India: A dashboard for managing members, events, and resources with a clean design and intuitive navigation.",
-    stack: ["Next.js", "TypeScript", "Tailwind CSS"],
-    image:
-      "/amai-mockup.jpg",
-    demoUrl: "https://example.com",
-  },
-  {
-    name: "Route Academy2",
-    year: "2026",
-    category: "EdTech Experience",
-    summary:
-      "Learning platform with clear paths, easy enrollment, and progress-oriented design.",
-    stack: ["Next.js", "TypeScript", "Tailwind CSS"],
-    image:
-      "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1400&q=80",
-    demoUrl: "https://example.com",
-  },
-    {
-    name: "Flarize3",
-    year: "2025",
-    category: "Solar Platform",
-    summary:
-      "Marketing website focused on trust, conversion, and strong product storytelling.",
-    stack: ["Next.js", "TypeScript", "Tailwind CSS"],
-    image: "/flarize-mockup.png",
-    demoUrl: "https://example.com",
-  },
-  {
-    name: "AMAI WebApp3",
-    year: "2025",
-    category: "SaaS Dashboard",
-    summary:
-      "AMAI - Ayurveda Medical Association of India: A dashboard for managing members, events, and resources with a clean design and intuitive navigation.",
-    stack: ["Next.js", "TypeScript", "Tailwind CSS"],
-    image:
-      "/amai-mockup.jpg",
-    demoUrl: "https://example.com",
-  },
-  {
-    name: "Route Academy3",
-    year: "2026",
-    category: "EdTech Experience",
-    summary:
-      "Learning platform with clear paths, easy enrollment, and progress-oriented design.",
-    stack: ["Next.js", "TypeScript", "Tailwind CSS"],
-    image:
-      "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1400&q=80",
-    demoUrl: "https://example.com",
-  },
-  
-];
+type ProjectsApiResponse = {
+  success: boolean;
+  projects: Project[];
+};
 
 export default function ProjectsPage() {
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const [active, setActive] = useState<number | null>(null);
   const switchLockedRef = useRef(false);
   const switchUnlockTimeoutRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    const loadProjects = async () => {
+      try {
+        setLoading(true);
+        setError("");
+
+        const response = await fetch("/api/projects", { cache: "no-store" });
+
+        if (!response.ok) {
+          throw new Error("Failed to load projects");
+        }
+
+        const data = (await response.json()) as ProjectsApiResponse;
+        setProjects(data.projects || []);
+      } catch (loadError) {
+        console.error(loadError);
+        setError("Could not load projects right now.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    void loadProjects();
+  }, []);
 
   const scheduleUnlock = () => {
     if (switchUnlockTimeoutRef.current) {
@@ -218,12 +122,31 @@ export default function ProjectsPage() {
         </header>
       </section>
 
+      {error ? (
+        <section className="mx-auto max-w-7xl px-5 pb-20">
+          <div className="rounded-2xl border border-red-400/20 bg-red-400/10 p-5 text-sm text-red-200">
+            {error}
+          </div>
+        </section>
+      ) : loading ? (
+        <section className="mx-auto max-w-7xl px-5 pb-20">
+          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+            {Array.from({ length: 3 }).map((_, index) => (
+              <div
+                key={index}
+                className="h-52 animate-pulse rounded-2xl border border-white/10 bg-white/5"
+              />
+            ))}
+          </div>
+        </section>
+      ) : (
+      <>
       {/* MOBILE LIST (no hover/reflow) */}
       <section className="mx-auto max-w-7xl px-5 pb-20 md:hidden">
         <div className="space-y-5">
           {projects.map((project, index) => (
             <article
-              key={`${project.name}-${index}`}
+              key={project._id || `${project.name}-${index}`}
               className="overflow-hidden rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl"
             >
               <div className="relative h-52 overflow-hidden">
@@ -262,6 +185,7 @@ export default function ProjectsPage() {
                 <Link
                   href={project.demoUrl}
                   target="_blank"
+                  rel="noopener noreferrer"
                   className="inline-block rounded-full border border-blue-400/40 bg-blue-500/20 px-4 py-2 text-sm transition hover:bg-blue-500/30"
                 >
                   Live Demo
@@ -295,7 +219,7 @@ export default function ProjectsPage() {
 
             return (
               <article
-                key={`${project.name}-${index}`}
+                key={project._id || `${project.name}-${index}`}
                 onMouseEnter={() => handleCardEnter(index)}
                 className={`
                   relative overflow-hidden rounded-3xl
@@ -367,6 +291,7 @@ export default function ProjectsPage() {
                       <Link
                         href={project.demoUrl}
                         target="_blank"
+                        rel="noopener noreferrer"
                         className="inline-block text-sm px-4 py-2 rounded-full bg-blue-500/20 border border-blue-400/40 hover:bg-blue-500/30 transition"
                       >
                         Live Demo
@@ -379,6 +304,8 @@ export default function ProjectsPage() {
           })}
         </div>
       </section>
+      </>
+      )}
     </main>
   );
 }
