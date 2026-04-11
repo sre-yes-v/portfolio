@@ -38,17 +38,17 @@ export const metadata: Metadata = {
   creator: "Sreyes V",
   publisher: "Sreyes V",
   alternates: {
-    canonical: `${siteUrl}/`,
+    canonical: `${siteUrl}`,
   },
   openGraph: {
     type: "website",
-    url: `${siteUrl}/`,
+    url: `${siteUrl}`,
     siteName,
     title: "Sreyes V - Portfolio",
     description,
     images: [
       {
-        url: `${siteUrl}/og_image.png`,
+        url: `${siteUrl}og_image.png`,
         width: 1200,
         height: 630,
         alt: "Sreyes V portfolio preview",
@@ -59,7 +59,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Sreyes V - Portfolio",
     description,
-    images: [`${siteUrl}/og_image.png`],
+    images: [`${siteUrl}og_image.png`],
   },
   robots: {
     index: true,
@@ -125,7 +125,7 @@ export default function RootLayout({
               url: siteUrl,
               jobTitle: "Frontend Developer",
               description,
-              image: `${siteUrl}/og_image.png`,
+              image: `${siteUrl}og_image.png`,
               sameAs: [
                 "https://github.com/sre-yes-v",
                 "https://www.linkedin.com/in/sreyes-v",
