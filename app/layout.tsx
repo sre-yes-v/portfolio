@@ -106,6 +106,9 @@ export default function RootLayout({
       lang="en"
       className={cn("h-full antialiased", "font-sans", geist.variable)}
     >
+      <head>
+        <meta name="google-site-verification" content="IXLZy3qF39qA_HVQLsRhC7TV24TYEHEEsXoQCBjSUgw" />
+      </head>
       <body className={`${poppins.className} min-h-full flex flex-col`}
         style={{
 					background:
