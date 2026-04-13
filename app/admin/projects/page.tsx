@@ -169,11 +169,16 @@ export default function AdminProjectsPage() {
         throw new Error(data.message || "Upload failed");
       }
 
-      setForm((current) => ({
-        ...current,
-        [field]: data.imageUrl as string,
-        homeImage: field === "image" ? (data.imageUrl as string) : current.homeImage,
-      }));
+      setForm((current) => {
+        const nextImageUrl = data.imageUrl as string;
+        const shouldSyncHomeImage = field === "image" && !current.homeImage.trim();
+
+        return {
+          ...current,
+          [field]: nextImageUrl,
+          homeImage: shouldSyncHomeImage ? nextImageUrl : current.homeImage,
+        };
+      });
 
       if (field === "image") {
         setHomeImageFileName(file.name);
@@ -181,7 +186,7 @@ export default function AdminProjectsPage() {
 
       setMessage(
         field === "image"
-          ? "Main image uploaded and copied to home image."
+          ? "Main image uploaded. Home image will only auto-fill if it is empty."
           : "Home selected image uploaded."
       );
     } catch (uploadError) {

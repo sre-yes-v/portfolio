@@ -62,7 +62,7 @@ const Projects = () => {
             role="img"
             className="h-full w-full bg-cover bg-center"
             style={{
-              backgroundImage: `url(${card.homeImage || card.image})`,
+              backgroundImage: card.homeImage ? `url(${card.homeImage})` : "none",
               WebkitMaskImage: 'linear-gradient(to bottom, #000 58%, transparent 100%)',
               maskImage: 'linear-gradient(to bottom, #000 58%, transparent 100%)',
               WebkitMaskRepeat: 'no-repeat',
