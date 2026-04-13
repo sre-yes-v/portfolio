@@ -9,7 +9,7 @@ const ProjectSchema = new mongoose.Schema(
     stack: { type: [String], required: true, default: [] },
     image: { type: String, required: true, trim: true },
     homeImage: { type: String, trim: true, default: "" },
-    demoUrl: { type: String, required: true, trim: true },
+    demoUrl: { type: String, trim: true, default: "" },
     showHomeScreen: { type: Boolean, default: false },
   },
   { timestamps: true }

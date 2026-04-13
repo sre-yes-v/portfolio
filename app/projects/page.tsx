@@ -16,6 +16,8 @@ type Project = {
   showHomeScreen: boolean;
 };
 
+const hasLiveLink = (demoUrl: string) => demoUrl.trim().length > 0;
+
 type ProjectsApiResponse = {
   success: boolean;
   projects: Project[];
@@ -182,14 +184,20 @@ export default function ProjectsPage() {
                   ))}
                 </div>
 
-                <Link
-                  href={project.demoUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-block rounded-full border border-blue-400/40 bg-blue-500/20 px-4 py-2 text-sm transition hover:bg-blue-500/30"
-                >
-                  Live Demo
-                </Link>
+                {hasLiveLink(project.demoUrl) ? (
+                  <Link
+                    href={project.demoUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-block rounded-full border border-blue-400/40 bg-blue-500/20 px-4 py-2 text-sm transition hover:bg-blue-500/30"
+                  >
+                    Live Demo
+                  </Link>
+                ) : (
+                  <span className="inline-flex items-center rounded-full border border-amber-300/30 bg-amber-400/10 px-4 py-2 text-sm text-amber-100">
+                    Work in Progress
+                  </span>
+                )}
               </div>
             </article>
           ))}
@@ -288,14 +296,20 @@ export default function ProjectsPage() {
                     </div>
 
                     <div className="pt-2">
-                      <Link
-                        href={project.demoUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-block text-sm px-4 py-2 rounded-full bg-blue-500/20 border border-blue-400/40 hover:bg-blue-500/30 transition"
-                      >
-                        Live Demo
-                      </Link>
+                      {hasLiveLink(project.demoUrl) ? (
+                        <Link
+                          href={project.demoUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-block rounded-full border border-blue-400/40 bg-blue-500/20 px-4 py-2 text-sm transition hover:bg-blue-500/30"
+                        >
+                          Visit Live Site
+                        </Link>
+                      ) : (
+                        <span className="inline-flex items-center rounded-full border border-amber-300/30 bg-amber-400/10 px-4 py-2 text-sm text-amber-100">
+                          Work in Progress
+                        </span>
+                      )}
                     </div>
                   </div>
                 </div>

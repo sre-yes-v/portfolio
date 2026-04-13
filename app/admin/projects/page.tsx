@@ -213,10 +213,9 @@ export default function AdminProjectsPage() {
       !normalizedForm.category ||
       !normalizedForm.summary ||
       !normalizedForm.image ||
-      !normalizedForm.demoUrl ||
       stack.length === 0
     ) {
-      setError("All fields are required. Stack should have at least one item.");
+      setError("Name, year, category, summary, image, and stack are required. Demo URL is optional.");
       return;
     }
 
@@ -447,6 +446,7 @@ export default function AdminProjectsPage() {
                 placeholder="https://example.com"
                 className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2.5 text-white outline-none transition focus:border-blue-400/40"
               />
+              <p className="text-[11px] text-slate-500">Leave blank to mark the project as work in progress.</p>
             </label>
 
             <label className="md:col-span-2 inline-flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-slate-300">
@@ -520,15 +520,26 @@ export default function AdminProjectsPage() {
                         {project.category} • {project.year}
                       </p>
                     </div>
-                    <span
-                      className={`rounded-full border px-2.5 py-1 text-[11px] uppercase tracking-[0.14em] ${
-                        project.showHomeScreen
-                          ? "border-emerald-300/30 bg-emerald-400/10 text-emerald-200"
-                          : "border-white/15 bg-white/5 text-white/70"
-                      }`}
-                    >
-                      {project.showHomeScreen ? "Selected" : "Archive only"}
-                    </span>
+                    <div className="flex flex-col items-end gap-2">
+                      <span
+                        className={`rounded-full border px-2.5 py-1 text-[11px] uppercase tracking-[0.14em] ${
+                          project.showHomeScreen
+                            ? "border-emerald-300/30 bg-emerald-400/10 text-emerald-200"
+                            : "border-white/15 bg-white/5 text-white/70"
+                        }`}
+                      >
+                        {project.showHomeScreen ? "Selected" : "Archive only"}
+                      </span>
+                      <span
+                        className={`rounded-full border px-2.5 py-1 text-[11px] uppercase tracking-[0.14em] ${
+                          project.demoUrl.trim()
+                            ? "border-blue-300/30 bg-blue-400/10 text-blue-200"
+                            : "border-amber-300/30 bg-amber-400/10 text-amber-200"
+                        }`}
+                      >
+                        {project.demoUrl.trim() ? "Live Link" : "Work in Progress"}
+                      </span>
+                    </div>
                   </div>
 
                   <p className="mt-3 text-sm leading-relaxed text-slate-300">{project.summary}</p>

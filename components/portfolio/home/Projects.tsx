@@ -98,15 +98,21 @@ const Projects = () => {
                 <span aria-hidden="true">→</span>
               </a>
 
-              <a
-                href={card.demoUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded-full border border-slate-300 bg-slate-200 px-5 py-2.5 text-sm font-medium text-black backdrop-blur-sm transition hover:scale-[1.02]"
-              >
-                Visit Live Site
-                <span aria-hidden="true">↗</span>
-              </a>
+              {card.demoUrl.trim() ? (
+                <a
+                  href={card.demoUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 rounded-full border border-slate-300 bg-slate-200 px-5 py-2.5 text-sm font-medium text-black backdrop-blur-sm transition hover:scale-[1.02]"
+                >
+                  Visit Live Site
+                  <span aria-hidden="true">↗</span>
+                </a>
+              ) : (
+                <span className="inline-flex items-center gap-2 rounded-full border border-amber-300/30 bg-amber-400/10 px-5 py-2.5 text-sm font-medium text-amber-100 backdrop-blur-sm">
+                  Work in Progress
+                </span>
+              )}
             </div>
           </div>
         </Card>

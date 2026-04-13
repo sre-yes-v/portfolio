@@ -41,7 +41,7 @@ const isValidProject = (project: ProjectPayload): project is RequiredProjectPayl
       Array.isArray(project.stack) &&
       project.stack.every((item) => typeof item === "string") &&
       typeof project.image === "string" &&
-      typeof project.demoUrl === "string" &&
+        (project.demoUrl === undefined || typeof project.demoUrl === "string") &&
       typeof project.showHomeScreen === "boolean"
   );
 
@@ -104,7 +104,7 @@ export async function PATCH(req: Request, context: RouteContext) {
       stack: payload.stack.map((item) => item.trim()).filter(Boolean),
       image: payload.image.trim(),
       homeImage: payload.homeImage?.trim() ?? "",
-      demoUrl: payload.demoUrl.trim(),
+      demoUrl: payload.demoUrl?.trim() ?? "",
       showHomeScreen: payload.showHomeScreen,
     },
     { new: true }
