@@ -186,7 +186,7 @@ export default function AdminProjectsPage() {
       );
     } catch (uploadError) {
       console.error(uploadError);
-      setError("Could not upload image right now.");
+      setError(uploadError instanceof Error ? uploadError.message : "Could not upload image right now.");
     } finally {
       setUploadingField(null);
       event.target.value = "";

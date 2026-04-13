@@ -17,7 +17,11 @@ const sanitizeFilename = (filename: string) =>
  * Upload to Cloudinary with SHA1 signature authentication
  * Requires CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET
  */
-async function uploadToCloudinary(buffer: Buffer, filename: string): Promise<string | null> {
+async function uploadToCloudinary(
+  buffer: Buffer,
+  filename: string,
+  mimeType: string
+): Promise<string | null> {
   const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
   const apiKey = process.env.CLOUDINARY_API_KEY;
   const apiSecret = process.env.CLOUDINARY_API_SECRET;
@@ -28,10 +32,8 @@ async function uploadToCloudinary(buffer: Buffer, filename: string): Promise<str
 
   try {
     const formData = new FormData();
-    const blob = new Blob([new Uint8Array(buffer)], { type: "image/jpeg" });
+    const blob = new Blob([new Uint8Array(buffer)], { type: mimeType || "image/jpeg" });
     formData.append("file", blob, filename);
-    formData.append("upload_preset", "portfolio_projects");
-    formData.append("cloud_name", cloudName);
 
     // Generate SHA1 signature for security
     const timestamp = Math.floor(Date.now() / 1000);
@@ -99,12 +101,22 @@ export async function POST(req: NextRequest) {
 
   try {
     // Try Cloudinary first (production/optional)
-    const cloudinaryUrl = await uploadToCloudinary(buffer, file.name);
+    const cloudinaryUrl = await uploadToCloudinary(buffer, file.name, file.type);
     if (cloudinaryUrl) {
       return Response.json({
         success: true,
         imageUrl: cloudinaryUrl,
       });
+    }
+
+    if (process.env.NODE_ENV === "production") {
+      return Response.json(
+        {
+          success: false,
+          message: "Cloudinary upload failed. Please verify your Cloudinary credentials and account settings.",
+        },
+        { status: 500 }
+      );
     }
 
     // Fallback to local storage (development)
@@ -127,7 +139,12 @@ export async function POST(req: NextRequest) {
     console.error("Upload error:", error);
 
     // Check if production without Cloudinary config
-    if (process.env.NODE_ENV === "production" && !process.env.CLOUDINARY_CLOUD_NAME) {
+    if (
+      process.env.NODE_ENV === "production" &&
+      (!process.env.CLOUDINARY_CLOUD_NAME ||
+        !process.env.CLOUDINARY_API_KEY ||
+        !process.env.CLOUDINARY_API_SECRET)
+    ) {
       return Response.json(
         {
           success: false,
