@@ -171,16 +171,24 @@ export default function AdminProjectsPage() {
 
       setForm((current) => {
         const nextImageUrl = data.imageUrl as string;
-        const shouldSyncHomeImage = field === "image" && !current.homeImage.trim();
+
+        if (field === "homeImage") {
+          return {
+            ...current,
+            homeImage: nextImageUrl,
+          };
+        }
+
+        const shouldSyncHomeImage = !current.homeImage.trim();
 
         return {
           ...current,
-          [field]: nextImageUrl,
+          image: nextImageUrl,
           homeImage: shouldSyncHomeImage ? nextImageUrl : current.homeImage,
         };
       });
 
-      if (field === "image") {
+      if (field === "image" && !form.homeImage.trim()) {
         setHomeImageFileName(file.name);
       }
 
