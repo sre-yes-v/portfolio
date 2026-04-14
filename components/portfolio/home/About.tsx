@@ -307,11 +307,7 @@ export default function About() {
 										</div>
 										<p className="whitespace-nowrap text-xs text-white/50">{item.period}</p>
 									</div>
-									<ul className="mt-2 list-disc space-y-1 pl-5 text-sm leading-relaxed text-slate-400">
-										{item.description.map((point, pointIndex) => (
-											<li key={`${item.role}-${pointIndex}`}>{point}</li>
-										))}
-									</ul>
+									
 								</div>
 							))}
 						</div>
