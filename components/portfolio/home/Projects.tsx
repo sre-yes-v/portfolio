@@ -86,7 +86,7 @@ const Projects = () => {
             <h3 className="max-w-3xl text-3xl font-semibold leading-[1.02] text-white sm:text-4xl md:text-5xl">
               {card.name}
             </h3>
-            <p className="mt-4 max-w-2xl text-sm leading-relaxed text-zinc-200 sm:text-base">{card.summary}</p>
+            {/* <p className="mt-4 max-w-2xl text-sm leading-relaxed text-zinc-200 sm:text-base">{card.summary}</p> */}
 
             <div className="mt-6 flex flex-wrap items-center gap-3">
               <a
@@ -159,7 +159,7 @@ const Projects = () => {
             {activeIndex + 1} / {projectCards.length}
           </div>
 
-          <div className="relative h-full w-full max-w-300 overflow-visible">
+          <div className="relative h-full w-full max-w-300 px-5 sm:p-0 overflow-visible">
             <CardSwap
               width="min(90vw, 1180px)"
               height="min(82vh, 760px)"
