@@ -1,5 +1,6 @@
 "use client";
 
+import { Roboto_Flex } from "next/font/google";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 type Point = { x: number; y: number };
@@ -42,10 +43,16 @@ const debounce = <T extends (...args: never[]) => void>(func: T, delay: number) 
   };
 };
 
+const textPressureFont = Roboto_Flex({
+  subsets: ["latin"],
+  weight: "variable",
+  axes: ["wdth", "slnt"],
+});
+
 function TextPressure({
   text = "Compressa",
-  fontFamily = "Compressa VF",
-  fontUrl = "https://res.cloudinary.com/dr6lvwubh/raw/upload/v1529908256/CompressaPRO-GX.woff2",
+  fontFamily = textPressureFont.style.fontFamily,
+  fontUrl,
   width = true,
   weight = true,
   italic = true,
@@ -221,8 +228,10 @@ function TextPressure({
     return () => cancelAnimationFrame(rafId);
   }, [width, weight, italic, alpha, isInView]);
 
-  const styleElement = useMemo(
-    () => (
+  const styleElement = useMemo(() => {
+    if (!fontUrl) return null;
+
+    return (
       <style>{`
         @font-face {
           font-family: '${fontFamily}';
@@ -254,9 +263,8 @@ function TextPressure({
           color: ${textColor};
         }
       `}</style>
-    ),
-    [fontFamily, fontUrl, textColor, strokeColor],
-  );
+    );
+  }, [fontFamily, fontUrl, textColor, strokeColor]);
 
   const dynamicClassName = [className, flex ? "flex" : "", stroke ? "stroke" : ""]
     .filter(Boolean)
